@@ -1,0 +1,6 @@
+D:\source\C#\exp3lib\exp3lib\bin\Debug\exp3lib.dll
+D:\source\C#\exp3lib\exp3lib\bin\Debug\exp3lib.pdb
+D:\source\C#\exp3lib\exp3lib\obj\Debug\exp3lib.csproj.CoreCompileInputs.cache
+D:\source\C#\exp3lib\exp3lib\obj\Debug\exp3lib.dll
+D:\source\C#\exp3lib\exp3lib\obj\Debug\exp3lib.pdb
+D:\source\C#\exp3lib\exp3lib\obj\Debug\exp3lib.csprojAssemblyReference.cache
