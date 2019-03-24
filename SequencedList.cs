@@ -11,12 +11,14 @@ namespace DSAGL
         private T[] content;
         private int length;
         private int max;
+        private int head;
 
         public SequencedList()//默认初始化
         {
             content = new T[128];
             length = 0;
             max = 128;
+            head = 0;
         }
 
         public SequencedList(SequencedList<T> tar)//使用SequencedList初始化
@@ -26,6 +28,7 @@ namespace DSAGL
                 content[i] = tar[i];
             length = tar.getLength;
             max = (tar.getLength / 128 + 1) * 128;
+            head = 0;
         }
 
         public SequencedList(SingleLinkedList<T> tar)//使用SingleLinkedList初始化
@@ -40,6 +43,7 @@ namespace DSAGL
             tar.repos(i);
             length = tar.getLength;
             max = (tar.getLength / 128 + 1) * 128;
+            head = 0;
         }
 
         public SequencedList(T[] tar)//使用数组或数据列表初始化
@@ -49,11 +53,18 @@ namespace DSAGL
                 content[i] = tar[i];
             length = tar.Length;
             max = (tar.Length / 128 + 1) * 128;
+            head = 0;
         }
 
         public int getLength//获取长度
         {
             get { return length; }
+        }
+
+        public int Head//获取队头
+        {
+            get { return head; }
+            set { head = value; }
         }
 
         public T this[int i]//顺序表的索引器
@@ -106,8 +117,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for(int k=startOfMe;k<length-num;k++)
+                content[k+num] = content[k];
             int i = 0, j = 0;
             while (j < num)
                 content[startOfMe + i++] = tar[startOfTar + j++];
@@ -123,8 +134,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             while (j < num)
                 content[startOfMe + i++] = tar[startOfTar + j++];
@@ -141,8 +152,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             while (j < num)
                 content[startOfMe + i++] = tar[startOfTar + j++];
@@ -154,8 +165,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             while (j < num)
                 content[startOfMe + i++] = tar[startOfTar + j++];
@@ -169,8 +180,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             while (j < num)
                 content[startOfMe + i++] = tar[startOfTar + j++];
@@ -187,8 +198,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             while (j < num)
                 content[startOfMe + i++] = tar[startOfTar + j++];
@@ -200,8 +211,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             while (j < num)
             {
@@ -220,8 +231,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             tar.repos(startOfTar);
             while (j < num)
@@ -242,8 +253,8 @@ namespace DSAGL
             if (length + num >= max - 1)
                 resize((length + num) / 128 + 1);
             length += num;
-            for (int k = length; k > startOfMe; k--)
-                content[k] = content[k - num];
+            for (int k = startOfMe; k < length - num; k++)
+                content[k + num] = content[k];
             int i = 0, j = 0;
             tar.repos(startOfTar);
             while (j < num)
@@ -446,6 +457,8 @@ namespace DSAGL
 
         public T pop()//栈顶出栈
         {
+            if (length == 0)
+                return default(T);
             T obj = content[length - 1];
             delete(length - 1, 1);
             return obj;
@@ -453,8 +466,10 @@ namespace DSAGL
 
         public T start()//队头出队
         {
-            T obj = content[0];
-            delete(0, 1);
+            if (head == length)
+                return default(T);
+            T obj = content[head];
+            head++;
             return obj;
         }
 
