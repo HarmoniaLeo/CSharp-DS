@@ -31,21 +31,6 @@ namespace DSAGL
             head = 0;
         }
 
-        public SequencedList(SingleLinkedList<T> tar)//使用SingleLinkedList初始化
-        {
-            content = new T[(tar.getLength / 128 + 1) * 128];
-            int i;
-            for (i = 0; i < tar.getLength; i++)
-            {
-                content[i] = tar[0];
-                tar.repos(1);
-            }
-            tar.repos(i);
-            length = tar.getLength;
-            max = (tar.getLength / 128 + 1) * 128;
-            head = 0;
-        }
-
         public SequencedList(T[] tar)//使用数组或数据列表初始化
         {
             content = new T[(tar.Length / 128 + 1) * 128];
@@ -205,67 +190,6 @@ namespace DSAGL
                 content[startOfMe + i++] = tar[startOfTar + j++];
         }
 
-        public void add(SingleLinkedList<T> tar)//从SingleLinkedList复制并插入元素
-        {
-            int startOfMe = length, num = tar.getLength;
-            if (length + num >= max - 1)
-                resize((length + num) / 128 + 1);
-            length += num;
-            for (int k = startOfMe; k < length - num; k++)
-                content[k + num] = content[k];
-            int i = 0, j = 0;
-            while (j < num)
-            {
-                content[startOfMe + i++] = tar[0];
-                tar.repos(1);
-                j++;
-            }
-            tar.repos(-j);
-        }
-
-        public void add(SingleLinkedList<T> tar, int startOfMe, int startOfTar = 0)//从SingleLinkedList复制并插入元素
-        {
-            int num = tar.getLength;
-            if (startOfMe < 0 && startOfMe >= length)
-                return;
-            if (length + num >= max - 1)
-                resize((length + num) / 128 + 1);
-            length += num;
-            for (int k = startOfMe; k < length - num; k++)
-                content[k + num] = content[k];
-            int i = 0, j = 0;
-            tar.repos(startOfTar);
-            while (j < num)
-            {
-                content[startOfMe + i++] = tar[0];
-                tar.repos(1);
-                j++;
-            }
-            tar.repos(-startOfTar-j);
-        }
-
-        public void add(SingleLinkedList<T> tar, int startOfMe, int startOfTar, int num)//从SingleLinkedList复制并插入元素
-        {
-            if (startOfMe < 0 && startOfMe >= length)
-                return;
-            if (num > tar.getLength - startOfTar)
-                num = tar.getLength - startOfTar;
-            if (length + num >= max - 1)
-                resize((length + num) / 128 + 1);
-            length += num;
-            for (int k = startOfMe; k < length - num; k++)
-                content[k + num] = content[k];
-            int i = 0, j = 0;
-            tar.repos(startOfTar);
-            while (j < num)
-            {
-                content[startOfMe + i++] = tar[0];
-                tar.repos(1);
-                j++;
-            }
-            tar.repos(-startOfTar-j);
-        }
-
         public void cover(T[] tar)//从数组复制并覆盖元素
         {
             int startOfMe = length, num = tar.Length,startOfTar=0;
@@ -366,62 +290,6 @@ namespace DSAGL
                     length = startOfMe + j + 1;
                 content[startOfMe + i++] = tar[startOfTar + j++];
             }
-        }
-
-        public void cover(SingleLinkedList<T> tar)//从SingleLinkedListt复制并覆盖元素
-        {
-            int startOfMe = length, num = tar.getLength;
-            int j = 0, i = 0;
-            while (j < num)
-            {
-                if (startOfMe + j >= max - 1)
-                    resize((startOfMe + j) / 128 + 1);
-                if (startOfMe + j >= length)
-                    length = startOfMe + j + 1;
-                content[startOfMe + i++] = tar[0];
-                tar.repos(1);
-                j++;
-            }
-            tar.repos(-j);
-        }
-
-        public void cover(SingleLinkedList<T> tar, int startOfMe, int startOfTar = 0)//从SingleLinkedList复制并覆盖元素
-        {
-            int num = tar.getLength;
-            if (startOfMe < 0 && startOfMe >= length)
-                return;
-            int j = 0, i = 0;
-            tar.repos(startOfTar);
-            while (j < num)
-            {
-                if (startOfMe + j >= max - 1)
-                    resize((startOfMe + j) / 128 + 1);
-                if (startOfMe + j >= length)
-                    length = startOfMe + j + 1;
-                content[startOfMe + i++] = tar[0];
-                tar.repos(1);
-                j++;
-            }
-            tar.repos(-j);
-        }
-
-        public void cover(SingleLinkedList<T> tar, int startOfMe, int startOfTar, int num)//从SingleLinkedList复制并覆盖元素
-        {
-            if (startOfMe < 0 && startOfMe >= length)
-                return;
-            int j = 0, i = 0;
-            tar.repos(startOfTar);
-            while (j < num)
-            {
-                if (startOfMe + j >= max - 1)
-                    resize((startOfMe + j) / 128 + 1);
-                if (startOfMe + j >= length)
-                    length = startOfMe + j + 1;
-                content[startOfMe + i++] = tar[0];
-                tar.repos(1);
-                j++;
-            }
-            tar.repos(-j);
         }
 
         public void delete(int start = 0)//删除元素
@@ -531,6 +399,44 @@ namespace DSAGL
                 id--;
             }
             return -1;
+        }
+
+        public int binfind(T tar,int start=0)//二分查找元素
+        {
+            if (start < 0 || start >=length)
+                start = 0;
+            int end=length-1,mid = (start + end) / 2;
+            while (content[mid].CompareTo(tar)!=0 && start < end)
+            {
+                if (content[mid].CompareTo(tar)<0)
+                    start = mid + 1;
+                else
+                    end = mid - 1;
+                mid = (start + end) / 2;
+            }
+            if (content[mid].CompareTo(tar)!=0)
+                mid = -1;
+            return mid;
+        }
+
+        public int binfind(T tar, int start,int end)//二分查找元素
+        {
+            if (start < 0 || start >= length)
+                start = 0;
+            if (end<start || end >= length)
+                end=length-1;
+            int  mid = (start + end) / 2;
+            while (content[mid].CompareTo(tar) != 0 && start < end)
+            {
+                if (content[mid].CompareTo(tar) < 0)
+                    start = mid + 1;
+                else
+                    end = mid - 1;
+                mid = (start + end) / 2;
+            }
+            if (content[mid].CompareTo(tar) != 0)
+                mid = -1;
+            return mid;
         }
 
         private void quickSort(int s, int e)
